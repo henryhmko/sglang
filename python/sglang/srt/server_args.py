@@ -235,6 +235,12 @@ class ServerArgs:
             logger.info("When using sliding window in gemma-2, turn on flashinfer.")
             self.attention_backend = "flashinfer"
 
+        if "microsoft/Phi-3-small-8k-instruct" == self.model_path:
+            logger.info(
+                "Phi-3-small requires you to have trust_remote_code=True to run."
+            )
+            self.trust_remote_code = True
+
     @staticmethod
     def add_cli_args(parser: argparse.ArgumentParser):
         # Model and port args
