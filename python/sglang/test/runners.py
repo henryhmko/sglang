@@ -96,7 +96,9 @@ class HFRunner:
     def needs_trust_remote_code(self, model_path):
         models_needs_trust_remote = [
             "LxzGordon/URM-LLaMa-3.1-8B",
+            "microsoft/Phi-3-small-8k-instruct",
         ]
+        print(f"MODEL PATH IS: {model_path}")
         if model_path in models_needs_trust_remote:
             return True
         return False
@@ -110,7 +112,8 @@ class HFRunner:
             self.base_model = AutoModelForCausalLM.from_pretrained(
                 model_path,
                 torch_dtype=torch_dtype,
-                trust_remote_code=False,
+                trust_remote_code=self.needs_trust_remote_code(model_path),
+                # trust_remote_code=False,
                 low_cpu_mem_usage=True,
             ).cuda()
         elif self.model_type == "embedding":
@@ -119,6 +122,7 @@ class HFRunner:
             self.model = SentenceTransformer(
                 model_path,
                 model_kwargs={"torch_dtype": torch_dtype},
+                trust_remote_code=self.needs_trust_remote_code(model_path),
             ).cuda()
         elif self.model_type == "reward":
             from transformers import AutoModelForSequenceClassification
